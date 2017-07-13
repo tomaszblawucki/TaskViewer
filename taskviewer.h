@@ -21,6 +21,8 @@ private:
     double cpuLoad;
     double processLoadShare;
 
+    double memUsage;
+    double processmemUsage;
 
 
 
@@ -29,7 +31,8 @@ public:
     QString getOwnerUid(int pid);//ok
     void getUsername(QString uid);//ok
     void getProcessData(QString pid);
-    void getCpuUsage();//ok
+    void getCpuUsage();//ok?? bugi
+    void getMemoryUsage();
     void getProcessMemoryUsage(QString pid);
 
 

@@ -1,6 +1,7 @@
 #include "taskviewer.h"
 #include <unistd.h>
 
+
 TaskViewer::TaskViewer()
 {
 
@@ -32,15 +33,21 @@ void TaskViewer::getUsername(QString uid)
     QFile *file = new QFile("/etc/passwd");
     if(file->open(QIODevice::ReadOnly | QIODevice::Text))
     {
+
+        if(uid == QString::number(4294967295)){
+            username = "not set";
+            qDebug() << "USERNAME:" <<username;
+            return;
+        }
         QTextStream in(file);
         QString line;
         do{
             line = in.readLine();
-            if(line.contains(uid) && line.split(':')[2] == uid)
+            if(line.contains(uid) /*&& line.split(':')[2] == uid*/)
             {
-
+                //4294967295 is the unsigned user or root!!!
                 //qDebug()<<"Found"<<line.split(':')[2];
-                qDebug()<<"Username"<<line.split(':')[0];
+                qDebug()<<"USERNAME"<<line.split(':')[0];
                 username = line.split(':')[0];
                 return;
             }
@@ -145,5 +152,34 @@ void TaskViewer::getCpuUsage()
 
     }
     delete procs_stat;
+    return;
+}
+
+void TaskViewer::getMemoryUsage()
+{
+    QFile *file = new QFile("/proc/meminfo");
+    if(file->open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QTextStream in(file);
+        QString line;
+        long int total, free, used;
+
+        in >> line;
+        in >> line;
+        total = line.toDouble();
+        in.readLine();
+        in >> line;
+        in >> line;
+        free = line.toDouble();
+        used = total - free;
+
+        memUsage = 100*(double(used)/double(total));
+        qDebug() << "MEMORY USAGE: " <<memUsage << "%" << " FREE: " << free << " TOTAL: " << total;
+
+    }
+    else
+    qDebug() <<"File not found";
+    file->close();
+    delete file;
     return;
 }
