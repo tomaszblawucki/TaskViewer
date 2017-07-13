@@ -10,13 +10,17 @@ TaskViewer::TaskViewer()
 QString TaskViewer::getOwnerUid(int pid)
 {
     //qDebug() <<"Started";
-    QFile *file = new QFile(QString("/proc/")+QString::number(pid)+QString("/loginuid"));
+    QFile *file = new QFile(QString("/proc/")+QString::number(pid)+QString("/status"));
     if(file->open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QTextStream in(file);
         QString line;
-        in >>line;
-        //qDebug() <<"UID: " << line;
+        for(int i = 0; i < 7; i++)
+            in.readLine();
+
+        in >> line;
+        in >> line;
+        qDebug() <<"UID: " << line;
         file->close();
         delete file;
         return line;
@@ -83,13 +87,13 @@ void TaskViewer::getProcessData(QString pid)
 
 void TaskViewer::getCpuUsage()
 {
-    QFile *procs_stat = new QFile("/proc/stat");
+    QFile *file = new QFile("/proc/stat");
 
-    if(procs_stat->open(QIODevice::ReadOnly | QIODevice::Text))
+    if(file->open(QIODevice::ReadOnly | QIODevice::Text))
     {
         //qDebug() <<"File opened";
         QString line;
-        QString values[10];
+        QString values[11];
         long int total_jiffies_1 = 0;
         long int work_jiffies_1 = 0;
         long int total_jiffies_2 = 0;
@@ -100,7 +104,7 @@ void TaskViewer::getCpuUsage()
 
         //line = procs_stat->readLine();
         {
-        QTextStream in(procs_stat);
+        QTextStream in(file);
         for(int i =0; i<11; i++)
         {
             in >> values[i];
@@ -113,14 +117,14 @@ void TaskViewer::getCpuUsage()
                 work_jiffies_1 += values[i].toDouble();
         }
         }
-        procs_stat->close();
+        file->close();
 
         sleep(2);
 
-        procs_stat->open(QIODevice::ReadOnly | QIODevice::Text);
+        file->open(QIODevice::ReadOnly | QIODevice::Text);
 
 
-        QTextStream in(procs_stat);
+        QTextStream in(file);
         {
         for(int i =0; i<11; i++)
             {
@@ -134,7 +138,7 @@ void TaskViewer::getCpuUsage()
                     work_jiffies_2 += values[i].toDouble();
             }
         }
-        procs_stat->close();
+        file->close();
         //qDebug() <<"Total jiffies before" << total_jiffies_1;
         //qDebug() <<"Total work before" <<work_jiffies_1;
         //qDebug() <<"Total jiffies after" <<total_jiffies_2;
@@ -151,7 +155,7 @@ void TaskViewer::getCpuUsage()
         qDebug() <<"File '/proc/stat' open fail!!";
 
     }
-    delete procs_stat;
+    delete file;
     return;
 }
 
@@ -196,7 +200,7 @@ void TaskViewer::getProcs()
         if( rxp.exactMatch(dirNum.split('/')[2]) )
         {
             procDirs.append( dirNum.split('/')[2] );
-            qDebug() << dirNum.split('/')[2];;
+            //qDebug() << dirNum.split('/')[2];;
         }
 
     }

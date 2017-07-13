@@ -12,12 +12,14 @@ int main(int argc, char *argv[])
 
 
 
-    qDebug() << "UID: " << tv->getOwnerUid(1863);
-    tv->getUsername(tv->getOwnerUid(1863));
-    tv->getProcessData(QString::number(1863));
+    qDebug() << "UID: " << tv->getOwnerUid(8413);
+    tv->getUsername(tv->getOwnerUid(8413));
+    tv->getProcessData(QString::number(8413));
     tv->getMemoryUsage();
-    //tv->getCpuUsage();
     tv->getProcs();
+    tv->getCpuUsage();
+    tv->getProcs();
+
 
     return a.exec();
 }

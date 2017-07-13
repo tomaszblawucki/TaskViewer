@@ -16,17 +16,17 @@ class TaskViewer
 private:
 
     QString username;//ok
-    QString processName;
-    QString processState;
-    QString processPid;
-    QStringList procDirs;
+    QString processName;//ok
+    QString processState;//ok
+    QString processPid;//ok
+    QStringList procDirs;//ok
 
 
-    double cpuLoad;
-    double processLoadShare;
+    double cpuLoad;//ok
+    double processLoadShare;//TO_DO
 
-    double memUsage;
-    double processmemUsage;
+    double memUsage;//ok
+    double processmemUsage;//TO_DO
 
 
 
@@ -35,10 +35,9 @@ public:
     QString getOwnerUid(int pid);//ok
     void getUsername(QString uid);//ok
     void getProcessData(QString pid);
-    void getCpuUsage();//ok?? bugi
+    void getCpuUsage();//ok
     void getMemoryUsage();//ok
-    void getProcessMemoryUsage(QString pid);
-
+    void getProcessMemoryUsage(QString pid);//TO_DO
     void getProcs();
 
 
