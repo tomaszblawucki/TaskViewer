@@ -38,10 +38,10 @@ public:
     void getCpuUsage();//ok?? bugi
     void getMemoryUsage();//ok
     void getProcessMemoryUsage(QString pid);
-
     void getProcs();
 
 
+    void presentData();
 
 
 };

@@ -196,8 +196,19 @@ void TaskViewer::getProcs()
         if( rxp.exactMatch(dirNum.split('/')[2]) )
         {
             procDirs.append( dirNum.split('/')[2] );
-            qDebug() << dirNum.split('/')[2];;
+            //qDebug() << dirNum.split('/')[2];;
         }
 
+    }
+}
+
+void TaskViewer::presentData()
+{
+    
+    qDebug() << "TASK VIEWER";
+    qDebug() << "**LABELS**";
+    for(int i = 0; i < procDirs.size(); ++i)
+    {
+        
     }
 }

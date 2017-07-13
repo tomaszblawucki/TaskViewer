@@ -17,7 +17,6 @@ int main(int argc, char *argv[])
     tv->getProcessData(QString::number(1863));
     tv->getMemoryUsage();
     //tv->getCpuUsage();
-    tv->getProcs();
 
     return a.exec();
 }
