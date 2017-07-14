@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QDirIterator>
 #include <QRegExp>
+#include <iomanip>
 
 int main(int argc, char *argv[])
 {
@@ -12,13 +13,15 @@ int main(int argc, char *argv[])
 
 
 
-    qDebug() << "UID: " << tv->getOwnerUid(8413);
-    tv->getUsername(tv->getOwnerUid(8413));
-    tv->getProcessData(QString::number(8413));
     tv->getMemoryUsage();
-    tv->getProcs();
     tv->getCpuUsage();
     tv->getProcs();
+    tv->getUsername(tv->getOwnerUid(1863));
+    tv->getProcessData(QString::number(1863));
+    tv->getProcessMemoryUsage(QString::number(1863));
+
+
+    tv->showProcInline(QString::number(1863));
 
 
     return a.exec();

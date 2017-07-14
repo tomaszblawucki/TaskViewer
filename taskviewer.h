@@ -19,29 +19,37 @@ private:
     QString processName;//ok
     QString processState;//ok
     QString processPid;//ok
-    QStringList procDirs;//ok
 
 
     double cpuLoad;//ok
     double processLoadShare;//TO_DO
 
+
     double memUsage;//ok
-    double processmemUsage;//TO_DO
+    long int memUsageKb;//ok
+    double processmemUsage;//ok
+    long int processmemUsageVirt;//ok
+    long int processmemUsageRes;//ok
+    long int processmemUsageShr;//ok
+
 
 
 
 public:
+
+    QStringList procDirs;//ok
+
     TaskViewer();
     QString getOwnerUid(int pid);//ok
     void getUsername(QString uid);//ok
     void getProcessData(QString pid);
     void getCpuUsage();//ok
     void getMemoryUsage();//ok
-    void getProcessMemoryUsage(QString pid);//TO_DO
-    void getProcs();
-
-
-
+    void getProcessMemoryUsage(QString pid);//ok
+    void getProcs();//ok
+    QString showProcInline(QString pid);
+    void renderView();
+    char* fillRest(QString w, int l);
 
 };
 
