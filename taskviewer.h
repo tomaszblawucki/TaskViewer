@@ -20,13 +20,23 @@ private:
     QString processState;//ok
     QString processPid;//ok
 
+    struct Process{
+        QString pid;
+        QString state;
+        QString usr;
+        QString mem_virt;
+        QString mem_res;
+        //QString
+    };
 
-    double cpuLoad;//ok
+
+    QString cpuLoad;//ok
     double processLoadShare;//TO_DO
 
 
-    double memUsage;//ok
+    QString memUsage;//ok
     long int memUsageKb;//ok
+    long int memFree;
     double processmemUsage;//ok
     long int processmemUsageVirt;//ok
     long int processmemUsageRes;//ok
@@ -47,9 +57,8 @@ public:
     void getMemoryUsage();//ok
     void getProcessMemoryUsage(QString pid);//ok
     void getProcs();//ok
-    QString showProcInline(QString pid);
+    void showProcInline(QString pid);
     void renderView();
-    char* fillRest(QString w, int l);
 
 };
 

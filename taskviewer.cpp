@@ -1,5 +1,6 @@
 #include "taskviewer.h"
 #include <unistd.h>
+#include <iostream>
 #include <iomanip>
 
 
@@ -28,7 +29,7 @@ QString TaskViewer::getOwnerUid(int pid)
         return line;
     }
     else
-    qDebug() <<"File not found";
+    std::cout<<"File not found"<<std::endl;
 
 
     return 0;
@@ -60,7 +61,7 @@ void TaskViewer::getUsername(QString uid)
         }while(!line.isNull());
     }
     else
-    qDebug() <<"File not found";
+     std::cout<<"File /etc/passwd not found"<<std::endl;
 
     return;
 
@@ -82,7 +83,7 @@ void TaskViewer::getProcessData(QString pid)
         return;
     }
     else
-    qDebug() <<"File not found";
+    std::cout<<"File proc/"<<pid.toStdString()<< "/stat not found"<<std::endl;
     return;
 }
 
@@ -150,11 +151,11 @@ void TaskViewer::getCpuUsage()
         //qDebug() << (work_jiffies_2 - work_jiffies_1);
         //qDebug() << (total_jiffies_2 - total_jiffies_1);
         //qDebug() << "cpu load: " << load << "%";
-
+        cpuLoad = QString::number(load, 'f', 2);
     }
     else
     {
-        qDebug() <<"File '/proc/stat' open fail!!";
+        std::cout<<"File /proc/stat not found"<<std::endl;
 
     }
     delete file;
@@ -168,7 +169,7 @@ void TaskViewer::getMemoryUsage()
     {
         QTextStream in(file);
         QString line;
-        long int total, free, used;
+        long int total, used;
 
         in >> line;
         in >> line;
@@ -176,15 +177,15 @@ void TaskViewer::getMemoryUsage()
         in.readLine();
         in >> line;
         in >> line;
-        free = line.toDouble();
-        used = total - free;
+        memFree = line.toDouble();
+        used = total - memFree;
         memUsageKb = total;
-        memUsage = 100*(double(used)/double(total));
+        memUsage = QString::number((100*(double(used)/double(total))), 'f', 2);
         //qDebug() << "MEMORY USAGE: " <<memUsage << "%" << " FREE: " << free << " TOTAL: " << total;
 
     }
     else
-    qDebug() <<"File not found";
+    qDebug() <<"File /proc/meminfo not found";
     file->close();
     delete file;
     return;
@@ -214,7 +215,7 @@ void TaskViewer::getProcessMemoryUsage(QString pid)
 
     }
     else
-    qDebug() <<"File not found";
+    qDebug() <<"File /proc/"<<pid<<"/statm not found";
     file->close();
     delete file;
     return;
@@ -239,32 +240,55 @@ void TaskViewer::getProcs()
     }
 }
 
-QString TaskViewer::showProcInline(QString pid)
+void TaskViewer::showProcInline(QString pid)
 {
     getProcessData(pid);
     getProcessMemoryUsage(pid);
     getUsername(getOwnerUid(pid.toInt()));
 
     //qDebug() <<setwidth(QString("PID"), 10) << setwidth(QString("STATE"), 10) <<  setwidth(QString("USR"), 10) << setwidth("VIRT",10) << setwidth("RES", 10) << setwidth("SHR", 10) << setwidth("%MEM", 10) << setwidth("COMMAND", 10);
-    qDebug() << "PID" << fillRest("PID", 8) << "STATE" << fillRest("STATE", 8) <<  "USR" << fillRest("USR", 5) << "VIRT"  << fillRest("VIRT", 8) << "RES" << fillRest("RES", 8) << "SHR" << fillRest("SHR", 8) << "%MEM"  << fillRest("USR", 8) << "COMMAND";
-    qDebug() << pid << fillRest(pid, 8) << processState << fillRest(processState, 8)
-             << username << fillRest(username, 5) << processmemUsageVirt << fillRest(QString::number(processmemUsageVirt), 8) <<processmemUsageRes
-             << fillRest(QString::number(processmemUsageRes), 8) << processmemUsageShr << fillRest(QString::number(processmemUsageShr), 8) << processmemUsage << fillRest(QString::number(processmemUsage), 8) << processName;
+//    qDebug() << "PID" << fillRest("PID", 8) << "STATE" << fillRest("STATE", 8) <<  "USR" << fillRest("USR", 5) << "VIRT"  << fillRest("VIRT", 8) << "RES" << fillRest("RES", 8) << "SHR" << fillRest("SHR", 8) << "%MEM"  << fillRest("USR", 8) << "COMMAND";
+//    qDebug() << pid << fillRest(pid, 8) << processState << fillRest(processState, 8)
+//             << username << fillRest(username, 5) << processmemUsageVirt << fillRest(QString::number(processmemUsageVirt), 8) <<processmemUsageRes
+//             << fillRest(QString::number(processmemUsageRes), 8) << processmemUsageShr << fillRest(QString::number(processmemUsageShr), 8) << processmemUsage << fillRest(QString::number(processmemUsage), 8) << processName;
 
-    return "ToDo";
+
+    std::cout << std::setw(10)<<std::left<< pid.toStdString()
+              << std::setw(10)<<std::left<< processState.toStdString()
+              << std::setw(10)<<std::left<< username.toStdString()
+              << std::setw(10)<<std::left<< processmemUsageVirt
+              << std::setw(10)<<std::left<< processmemUsageRes
+              << std::setw(10)<<std::left<< processmemUsageShr
+              << std::setw(10)<<std::left<< processmemUsage
+              << std::setw(10)<<std::left<< processName.toStdString()
+              << std::endl;
+    return;
 }
 
 void TaskViewer::renderView()
 {
-    qDebug() << "PID " << " STATE " <<  " USR " << " VIRT " << " RES " << " SHR " << " %MEM " << " COMMAND";
-}
 
-char *TaskViewer::fillRest(QString word, int len)
-{
+    getProcs();
+    getMemoryUsage();
+    getCpuUsage();
+    std::cout <<"%CPU: "<<cpuLoad.toStdString()<<"%  "
+              <<" MEM TOTAL(KB): "  << memUsageKb
+              <<" MEM FREE(KB): "  << memFree
+              <<" MEM_USED(%): "<<memUsage.toStdString()<<"%"
+              <<std::endl;
 
-    //return QString()
-   // QString str(len - word.size(), '*');
-    QString str(12 - word.size(), '*');
-    return str.toLatin1().data();
-            //QString((len - word.length()), '*').toLatin1().data();
+
+    std::cout << std::setw(10)<<std::left<< "PID"
+              << std::setw(10)<<std::left<< "STATE"
+              << std::setw(10)<<std::left<<  "USR"
+              << std::setw(10)<<std::left<< "VIRT"
+              << std::setw(10)<<std::left<< "RES"
+              << std::setw(10)<<std::left<< "SHR"
+              << std::setw(10)<<std::left<< "%MEM"
+              << std::setw(10)<<std::left<< "COMMAND"
+              << std::endl;
+
+    for(int i = 0; i < (procDirs.size()/2); ++i)
+        showProcInline(procDirs[i]);
+
 }

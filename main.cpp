@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QDirIterator>
 #include <QRegExp>
+#include <iostream>
 #include <iomanip>
 
 int main(int argc, char *argv[])
@@ -11,18 +12,6 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
     TaskViewer *tv = new TaskViewer();
 
-
-
-    tv->getMemoryUsage();
-    tv->getCpuUsage();
-    tv->getProcs();
-    tv->getUsername(tv->getOwnerUid(1863));
-    tv->getProcessData(QString::number(1863));
-    tv->getProcessMemoryUsage(QString::number(1863));
-
-
-    tv->showProcInline(QString::number(1863));
-
-
+    tv->renderView();
     return a.exec();
 }
